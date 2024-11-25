@@ -13,9 +13,9 @@ Com ele, você pode:
 ## 🛠️ Tecnologias  
 Este projeto utiliza as seguintes tecnologias:  
 - **React Native**  
-- **Expo**  
-- **Firebase (se houver persistência de dados)  
-- API Externa (economic-information)
+- **Expo**
+- **Firebase**
+- API Externa (Awesome api)
   
 ## 🚀 Funcionalidades  
 - 📌 **Cadastro de Receitas e Despesas:** Adicione suas transações com descrição, valor e categoria.  
