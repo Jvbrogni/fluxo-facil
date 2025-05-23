@@ -43,22 +43,26 @@ export default function TransactionsScreen() {
 
     // Remove a transação do tipo correto
     const updatedTransactions = transactionsData[transactionType].filter(
-      (t) =>
+      (t: { description: string; date: string }) =>
         t.description !== transaction.description || t.date !== transaction.date
     );
 
-    // Atualiza os dados do estado local
-    setTransactionsData({
+    // Atualiza os dados do estado local de forma imutável
+    const updatedTransactionsData = {
       ...transactionsData,
       [transactionType]: updatedTransactions,
-    });
+    };
+
+    setTransactionsData(updatedTransactionsData);
 
     // Atualiza os dados no HomeService
     const monthIndex = HomeService.financeData.months.findIndex(
-      (month) => month.name === transactionsData.name
+      (month: { name: string }) => month.name === transactionsData.name
     );
-    HomeService.financeData.months[monthIndex][transactionType] =
-      updatedTransactions;
+    HomeService.financeData.months[monthIndex] = {
+      ...HomeService.financeData.months[monthIndex],
+      [transactionType]: updatedTransactions,
+    };
 
     Alert.alert("Sucesso", "Transação deletada com sucesso!");
   };
@@ -86,17 +90,28 @@ export default function TransactionsScreen() {
 
   const groupedTransactions = transactions.reduce<
     Record<number, typeof transactions>
-  >((groups, transaction) => {
-    const date = new Date(transaction.date);
-    const day = date.getDate();
+  >(
+    (
+      groups: Record<number, typeof transactions>,
+      transaction: {
+        date: string;
+        description: string;
+        amount: number;
+        category: string;
+      }
+    ) => {
+      const date = new Date(transaction.date);
+      const day = date.getDate();
 
-    if (!groups[day]) {
-      groups[day] = [];
-    }
+      if (!groups[day]) {
+        groups[day] = [];
+      }
 
-    groups[day].push(transaction);
-    return groups;
-  }, {});
+      groups[day].push(transaction);
+      return groups;
+    },
+    {}
+  );
 
   const sectionData = Object.keys(groupedTransactions)
     .map((key) => parseInt(key, 10))
@@ -176,7 +191,9 @@ export default function TransactionsScreen() {
       <AddTransaction
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
-        onTransactionSaved={(newTransaction: any) => handleAddTransaction(newTransaction)}
+        onTransactionSaved={(newTransaction: any) =>
+          handleAddTransaction(newTransaction)
+        }
       />
     </View>
   );
