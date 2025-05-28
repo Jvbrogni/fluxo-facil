@@ -50,6 +50,7 @@
 ## 2025-05-27
 
 ### 🛠️ Added
+
 - Configuração do **ESLint** com suporte a:
   - React
   - React Native
@@ -65,8 +66,31 @@
   - `"format"` para aplicar o Prettier
 
 ### 🧪 Testado
+
 - Verificação manual com `npx eslint .` e `npx prettier . --check`
 - Aplicado `--write` para corrigir formatação em todos os arquivos
 
----
+## 2025-05-28
+
+### 🧪 Added
+
+- Configuração inicial de testes unitários com Jest:
+   - Suporte a TypeScript (ts-jest).
+   - Preset jest-expo configurado para projetos Expo.
+   - Pasta __tests__ criada para testes organizados por serviço.
+
+- Cobertura inicial do serviço HomeService:
+   - Testes implementados com describe e it cobrindo:
+   - Geração de DTO de finanças (verificação de saldo, previsão, e dados do gráfico).
+   - Cálculo acumulado para gráficos.
+   - Divisão de datas em partes iguais.
+   - Formatação de datas em dd/MM.
+
+### ✅ Testado
+
+- 4 testes escritos para HomeService:
+   - 3 passaram com sucesso.
+   - 1 falhou inicialmente por inconsistência de fuso horário no toLocaleDateString, corrigido ajustando o horário da data de teste.
+
+- Validação da cobertura de código com comando jest --coverage
 
