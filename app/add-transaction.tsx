@@ -60,44 +60,49 @@ export default function AddTransaction({
 
   const handleSave = () => {
     const amount = parseFloat(value);
-  
-    if (!description || (type === 'expenses' && !category) || !amount || !type) {
+
+    if (
+      !description ||
+      (type === 'expenses' && !category) ||
+      !amount ||
+      !type
+    ) {
       Alert.alert('Aviso', 'Preencha todos os campos obrigatórios!');
       return;
     }
-  
+
     if (isNaN(amount) || amount <= 0) {
       Alert.alert('Aviso', 'Valor inválido!');
       return;
     }
-  
+
     const today = new Date();
     const date = today.toISOString().split('T')[0] + 'T00:00:00.000Z';
-  
+
     const newTransaction = {
       description,
       date, // Data atual formatada
-      category: type === 'incomes' ? undefined : category as ECategory,
+      category: type === 'incomes' ? undefined : (category as ECategory),
       amount,
     };
-  
+
     // Atualiza os dados globalmente
     const monthIndex = financeDataResponse.months.findIndex(
-      (month) => month.value === Object.values(EMonth)[today.getMonth()]
+      (month) => month.value === Object.values(EMonth)[today.getMonth()],
     );
-  
+
     financeDataResponse.months[monthIndex][type].push(newTransaction);
-    HomeService.financeData = HomeService.getFinanceDataDto(financeDataResponse);
-  
+    HomeService.financeData =
+      HomeService.getFinanceDataDto(financeDataResponse);
+
     // Notifica a tela principal
     if (onTransactionSaved) {
       onTransactionSaved(newTransaction);
     }
-  
+
     // Fecha o modal
     setModalVisible(false);
   };
-  
 
   return (
     <Modal visible={modalVisible} animationType="slide" transparent>
@@ -114,14 +119,16 @@ export default function AddTransaction({
           {/* Tipo */}
           <TouchableOpacity
             style={styles.input}
-            onPress={() => setType(type === 'expenses' ? 'incomes' : 'expenses')}
+            onPress={() =>
+              setType(type === 'expenses' ? 'incomes' : 'expenses')
+            }
           >
             <Text style={styles.inputText}>
               {type === 'expenses'
                 ? 'Despesas'
                 : type === 'incomes'
-                ? 'Receitas'
-                : 'Selecione o tipo'}
+                  ? 'Receitas'
+                  : 'Selecione o tipo'}
             </Text>
           </TouchableOpacity>
 
@@ -133,8 +140,8 @@ export default function AddTransaction({
                 category === ECategory.education
                   ? ECategory.leisure
                   : category === ECategory.leisure
-                  ? ECategory.food
-                  : ECategory.education
+                    ? ECategory.food
+                    : ECategory.education,
               )
             }
           >
@@ -166,7 +173,7 @@ export default function AddTransaction({
                 >
                   <Text style={styles.keyText}>{key}</Text>
                 </TouchableOpacity>
-              )
+              ),
             )}
           </View>
 
@@ -179,7 +186,6 @@ export default function AddTransaction({
     </Modal>
   );
 }
-
 
 const styles = StyleSheet.create({
   modalContainer: {

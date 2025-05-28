@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,9 +6,9 @@ import {
   ActivityIndicator,
   ScrollView,
   TouchableOpacity,
-} from "react-native";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useRouter } from "expo-router";
+} from 'react-native';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useRouter } from 'expo-router';
 
 type Indicator = {
   name: string;
@@ -30,24 +30,24 @@ export default function EconomicIndicatorsScreen() {
     const fetchEconomicData = async () => {
       try {
         const response = await fetch(
-          "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL"
+          'https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL',
         );
         const data = await response.json();
 
         setIndicators({
           usd: {
-            name: "Dólar (USD)",
+            name: 'Dólar (USD)',
             value: parseFloat(data.USDBRL.bid).toFixed(2),
             variation: parseFloat(data.USDBRL.pctChange).toFixed(2),
           },
           eur: {
-            name: "Euro (EUR)",
+            name: 'Euro (EUR)',
             value: parseFloat(data.EURBRL.bid).toFixed(2),
             variation: parseFloat(data.EURBRL.pctChange).toFixed(2),
           },
         });
       } catch (error) {
-        console.error("Erro ao buscar dados econômicos:", error);
+        console.error('Erro ao buscar dados econômicos:', error);
       } finally {
         setLoading(false);
       }
@@ -57,7 +57,7 @@ export default function EconomicIndicatorsScreen() {
   }, []);
 
   const goToHomeScreen = () => {
-    router.push("/home"); // Redireciona para a tela inicial
+    router.push('/home'); // Redireciona para a tela inicial
   };
 
   if (loading) {
@@ -94,8 +94,8 @@ export default function EconomicIndicatorsScreen() {
                     : styles.negativeVariation,
                 ]}
               >
-                {indicator.variation}%{" "}
-                {parseFloat(indicator.variation) >= 0 ? "↑" : "↓"}
+                {indicator.variation}%{' '}
+                {parseFloat(indicator.variation) >= 0 ? '↑' : '↓'}
               </Text>
             </View>
           ))}
@@ -107,32 +107,32 @@ export default function EconomicIndicatorsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1c1f26",
+    backgroundColor: '#1c1f26',
   },
   header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 15,
     paddingVertical: 10,
-    backgroundColor: "#2E3C3D",
+    backgroundColor: '#2E3C3D',
   },
   headerTitle: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginLeft: 10,
     flex: 1,
-    textAlign: "center",
+    textAlign: 'center',
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#1c1f26",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1c1f26',
   },
   loadingText: {
-    color: "#fff",
+    color: '#fff',
     marginTop: 10,
     fontSize: 16,
   },
@@ -142,20 +142,20 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   indicatorCard: {
-    backgroundColor: "#253031",
+    backgroundColor: '#253031',
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,
   },
   indicatorTitle: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   indicatorValue: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 22,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginTop: 5,
   },
   indicatorVariation: {
@@ -163,9 +163,9 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   positiveVariation: {
-    color: "#12A454",
+    color: '#12A454',
   },
   negativeVariation: {
-    color: "#E83F5B",
+    color: '#E83F5B',
   },
 });

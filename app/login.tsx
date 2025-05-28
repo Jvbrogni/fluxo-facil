@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback } from 'react';
 import {
   Text,
   View,
@@ -7,15 +7,15 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-} from "react-native";
-import { useRouter } from "expo-router";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../infra/firebase";
-import logoImage from "@/assets/images/logo.png";
+} from 'react-native';
+import { useRouter } from 'expo-router';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../infra/firebase';
+import logoImage from '@/assets/images/logo.png';
 
 export default function LoginScreen(): JSX.Element {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const router = useRouter();
 
   const handleLogin = useCallback(async () => {
@@ -23,15 +23,15 @@ export default function LoginScreen(): JSX.Element {
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
       Alert.alert(
-        "Login Bem-sucedido",
-        `Bem-vindo, ${userCredential.user.email}!`
+        'Login Bem-sucedido',
+        `Bem-vindo, ${userCredential.user.email}!`,
       );
-      router.push("/home");
+      router.push('/home');
     } catch (error) {
-      Alert.alert("Erro de Login", "Usuário ou senha incorretos.");
+      Alert.alert('Erro de Login', 'Usuário ou senha incorretos.');
     }
   }, [email, password]);
 
@@ -61,21 +61,21 @@ export default function LoginScreen(): JSX.Element {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 24 },
-  logo: { width: 180, height: 180, alignSelf: "center", marginBottom: 24 },
+  container: { flex: 1, justifyContent: 'center', padding: 24 },
+  logo: { width: 180, height: 180, alignSelf: 'center', marginBottom: 24 },
   input: {
     height: 50,
-    borderColor: "#ccc",
+    borderColor: '#ccc',
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 12,
     borderRadius: 6,
   },
   button: {
-    backgroundColor: "#1e90ff",
+    backgroundColor: '#1e90ff',
     padding: 12,
     borderRadius: 6,
-    alignItems: "center",
+    alignItems: 'center',
   },
-  buttonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
+  buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
 });

@@ -43,3 +43,28 @@
   - Tipagem explícita de `useState` para `activeTab`
   - Remoção de código duplicado
   - Identação e alinhamento leve ajustados
+
+
+## 2025-05-27
+
+### 🛠️ Added
+- Configuração do **ESLint** com suporte a:
+  - React
+  - React Native
+  - TypeScript
+  - Regras recomendadas e integração com Prettier
+
+- Configuração do **Prettier** com:
+  - Regras personalizadas (`singleQuote`, `trailingComma`, etc.)
+  - Suporte à formatação automática no VS Code
+
+- Adição de scripts no `package.json`:
+  - `"lint"` para rodar o ESLint
+  - `"format"` para aplicar o Prettier
+
+### 🧪 Testado
+- Verificação manual com `npx eslint .` e `npx prettier . --check`
+- Aplicado `--write` para corrigir formatação em todos os arquivos
+
+---
+

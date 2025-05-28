@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,25 +6,25 @@ import {
   TouchableOpacity,
   SectionList,
   Alert,
-} from "react-native";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import AddTransaction from "./add-transaction";
-import HomeService from "@/services/home-service";
-import { router, useLocalSearchParams } from "expo-router";
+} from 'react-native';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import AddTransaction from './add-transaction';
+import HomeService from '@/services/home-service';
+import { router, useLocalSearchParams } from 'expo-router';
 
 export default function TransactionsScreen() {
   const item = useLocalSearchParams();
-  const [activeTab, setActiveTab] = useState(item.activeTab || "expenses");
+  const [activeTab, setActiveTab] = useState(item.activeTab || 'expenses');
   const [modalVisible, setModalVisible] = useState(false);
   const [transactionsData, setTransactionsData] = useState(
-    HomeService.financeData.months[HomeService.currentMonthIndex]
+    HomeService.financeData.months[HomeService.currentMonthIndex],
   );
 
   const refreshData = () => {
     setTransactionsData(
-      HomeService.financeData.months[HomeService.currentMonthIndex]
+      HomeService.financeData.months[HomeService.currentMonthIndex],
     );
   };
 
@@ -39,12 +39,13 @@ export default function TransactionsScreen() {
   };
 
   const handleDeleteTransaction = (transaction: any) => {
-    const transactionType = activeTab === "expenses" ? "expenses" : "incomes";
+    const transactionType = activeTab === 'expenses' ? 'expenses' : 'incomes';
 
     // Remove a transação do tipo correto
     const updatedTransactions = transactionsData[transactionType].filter(
       (t: { description: string; date: string }) =>
-        t.description !== transaction.description || t.date !== transaction.date
+        t.description !== transaction.description ||
+        t.date !== transaction.date,
     );
 
     // Atualiza os dados do estado local de forma imutável
@@ -57,22 +58,22 @@ export default function TransactionsScreen() {
 
     // Atualiza os dados no HomeService
     const monthIndex = HomeService.financeData.months.findIndex(
-      (month: { name: string }) => month.name === transactionsData.name
+      (month: { name: string }) => month.name === transactionsData.name,
     );
     HomeService.financeData.months[monthIndex] = {
       ...HomeService.financeData.months[monthIndex],
       [transactionType]: updatedTransactions,
     };
 
-    Alert.alert("Sucesso", "Transação deletada com sucesso!");
+    Alert.alert('Sucesso', 'Transação deletada com sucesso!');
   };
 
   const goToHomeScreen = (): void => {
-    router.push("/home");
+    router.push('/home');
   };
 
   const formatCurrency = (value: number) => {
-    return `R$ ${value.toFixed(2).replace(".", ",")}`;
+    return `R$ ${value.toFixed(2).replace('.', ',')}`;
   };
 
   if (!transactionsData) {
@@ -84,7 +85,7 @@ export default function TransactionsScreen() {
   }
 
   const transactions =
-    activeTab === "expenses"
+    activeTab === 'expenses'
       ? transactionsData.expenses || []
       : transactionsData.incomes || [];
 
@@ -98,7 +99,7 @@ export default function TransactionsScreen() {
         description: string;
         amount: number;
         category: string;
-      }
+      },
     ) => {
       const date = new Date(transaction.date);
       const day = date.getDate();
@@ -110,7 +111,7 @@ export default function TransactionsScreen() {
       groups[day].push(transaction);
       return groups;
     },
-    {}
+    {},
   );
 
   const sectionData = Object.keys(groupedTransactions)
@@ -140,15 +141,15 @@ export default function TransactionsScreen() {
       {/* Tabs */}
       <View style={styles.tabs}>
         <TouchableOpacity
-          style={[styles.tab, activeTab === "expenses" && styles.activeTab]}
-          onPress={() => setActiveTab("expenses")}
+          style={[styles.tab, activeTab === 'expenses' && styles.activeTab]}
+          onPress={() => setActiveTab('expenses')}
         >
           <AntDesign name="downcircleo" size={24} color="#E83F5B" />
           <Text style={styles.tabText}>Despesas</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, activeTab === "incomes" && styles.activeTab]}
-          onPress={() => setActiveTab("incomes")}
+          style={[styles.tab, activeTab === 'incomes' && styles.activeTab]}
+          onPress={() => setActiveTab('incomes')}
         >
           <AntDesign name="upcircleo" size={24} color="#12A454" />
           <Text style={styles.tabText}>Receitas</Text>
@@ -168,7 +169,7 @@ export default function TransactionsScreen() {
             <Text
               style={[
                 styles.transactionAmount,
-                activeTab === "expenses" ? styles.expense : styles.income,
+                activeTab === 'expenses' ? styles.expense : styles.income,
               ]}
             >
               {formatCurrency(item.amount)}
@@ -202,91 +203,91 @@ export default function TransactionsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1c1f26",
+    backgroundColor: '#1c1f26',
     paddingTop: 50,
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 20,
     marginBottom: 20,
   },
   headerTitle: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   addButton: {
-    backgroundColor: "#27415699",
+    backgroundColor: '#27415699',
     width: 40,
     height: 40,
     borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    fontWeight: "bold",
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontWeight: 'bold',
   },
   tabs: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     marginBottom: 10,
   },
   tab: {
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     paddingVertical: 10,
     borderBottomWidth: 2,
-    borderBottomColor: "transparent",
+    borderBottomColor: 'transparent',
   },
   activeTab: {
-    borderBottomColor: "#1e90ff",
+    borderBottomColor: '#1e90ff',
   },
   tabText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   sectionHeader: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginVertical: 10,
     paddingHorizontal: 20,
   },
   transactionItem: {
-    flexDirection: "column",
+    flexDirection: 'column',
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#2a2e35",
+    borderBottomColor: '#2a2e35',
   },
   transactionCategory: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 18,
   },
   transactionDescription: {
-    color: "#aaa",
+    color: '#aaa',
     fontSize: 16,
     marginTop: 4,
   },
   transactionAmount: {
     fontSize: 16,
     marginTop: 8,
-    alignSelf: "flex-end",
+    alignSelf: 'flex-end',
   },
   expense: {
-    color: "red",
+    color: 'red',
   },
   income: {
-    color: "green",
+    color: 'green',
   },
   errorText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 18,
   },
   deleteButton: {
     marginLeft: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
