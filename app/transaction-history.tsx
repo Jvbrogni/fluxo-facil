@@ -99,6 +99,7 @@ export default function TransactionsScreen() {
         description: string;
         amount: number;
         category: string;
+        name?: string;
       },
     ) => {
       const date = new Date(transaction.date);
@@ -108,7 +109,12 @@ export default function TransactionsScreen() {
         groups[day] = [];
       }
 
-      groups[day].push(transaction);
+      const transactionWithName = {
+        ...transaction,
+        name: transaction.name ?? transaction.description,
+      };
+
+      groups[day].push(transactionWithName);
       return groups;
     },
     {},

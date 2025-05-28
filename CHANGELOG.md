@@ -20,29 +20,31 @@
 
 #### transaction-history.tsx
 
-- **Melhorado o controle de estado com imutabilidade**:
+- **Separação de responsabilidades**:
 
-  - Substituído `setTransactionsData({ ... })` por `updatedTransactionsData`, garantindo melhor legibilidade e separação lógica.
+  - o componente `AddTransaction`, antes autônomo, agora é chamado por uma nova tela `TransactionsScreen`, responsável por listar, adicionar e excluir transações.
 
-- **Validação de tipo para transações**:
+- **Novo componente de tela (TransactionsScreen)**:
 
-  - Adicionados tipos explícitos ao `filter` e `reduce` para garantir integridade das operações e facilitar leitura da estrutura da transação (`description`, `date`, `amount`, `category`).
+  - Adicionada navegação e controle de tabs (`Despesas`, `Receitas`).
+  - Implementada listagem agrupada por dia usando `SectionList`.
+  - Adicionada funcionalidade de exclusão de transações com atualização em `HomeService`.
 
-- **Correção do template literal inválido**:
+- **Melhorias de UX/UI**:
 
-  - Corrigido `formatCurrency` e `sectionData` que estavam com interpolação fora de crase. Ex:
-    ```ts
-    return R$ ${value.toFixed(2)} → return \`R$ ${value.toFixed(2)}\`
-    ```
+  - Inclusão de ícones (`FontAwesome`, `AntDesign`, `FontAwesome6`) e feedbacks visuais.
+  - Adição de botão flutuante para adicionar transação.
+  - Layout e estilização aprimorados com separação clara entre lista e formulário.
 
-- **Melhoria na atualização de dados no HomeService**:
+- **Melhoria no ciclo de dados**:
 
-  - Atualização feita com spread (`{ ...HomeService.financeData.months[monthIndex] }`) para manter imutabilidade do objeto ao atualizar uma transação.
+  - Reorganização do `useEffect` para garantir atualização apenas quando o modal fecha.
+  - As transações agora são atualizadas com mais segurança no estado local e global.
 
 - **Outras melhorias**:
-  - Tipagem explícita de `useState` para `activeTab`
-  - Remoção de código duplicado
-  - Identação e alinhamento leve ajustados
+  - Código modularizado e mais fácil de manter.
+  - Separação clara entre lógica de negócios (serviço) e interface de usuário.
+  - Identação e alinhamento leve ajustados.
 
 
 ## 2025-05-27
