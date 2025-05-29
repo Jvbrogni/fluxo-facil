@@ -9,45 +9,22 @@ import {
 } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useRouter } from 'expo-router';
-
-type Indicator = {
-  name: string;
-  value: string;
-  variation: string;
-};
-
-type IndicatorsState = {
-  usd: Indicator;
-  eur: Indicator;
-} | null;
+import { EconomicService, Indicator } from '@/services/EconomicService';
 
 export default function EconomicIndicatorsScreen() {
-  const [indicators, setIndicators] = useState<IndicatorsState>(null);
+  const [indicators, setIndicators] = useState<{ usd: Indicator; eur: Indicator } | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter(); // Para navegação
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchEconomicData = async () => {
       try {
-        const response = await fetch(
-          'https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL',
-        );
-        const data = await response.json();
-
-        setIndicators({
-          usd: {
-            name: 'Dólar (USD)',
-            value: parseFloat(data.USDBRL.bid).toFixed(2),
-            variation: parseFloat(data.USDBRL.pctChange).toFixed(2),
-          },
-          eur: {
-            name: 'Euro (EUR)',
-            value: parseFloat(data.EURBRL.bid).toFixed(2),
-            variation: parseFloat(data.EURBRL.pctChange).toFixed(2),
-          },
-        });
-      } catch (error) {
-        console.error('Erro ao buscar dados econômicos:', error);
+        const result = await EconomicService.getIndicators();
+        setIndicators(result);
+      } catch (err) {
+        console.error(err);
+        setError('Erro ao carregar dados econômicos. Tente novamente mais tarde.');
       } finally {
         setLoading(false);
       }
@@ -57,50 +34,57 @@ export default function EconomicIndicatorsScreen() {
   }, []);
 
   const goToHomeScreen = () => {
-    router.push('/home'); // Redireciona para a tela inicial
+    router.push('/home');
   };
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1e90ff" />
-        <Text style={styles.loadingText}>Carregando dados...</Text>
-      </View>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#1e90ff" />
+          <Text style={styles.loadingText}>Carregando dados...</Text>
+        </View>
+    );
+  }
+
+  if (error) {
+    return (
+        <View style={styles.loadingContainer}>
+          <FontAwesome name="exclamation-triangle" size={50} color="#E83F5B" />
+          <Text style={styles.loadingText}>{error}</Text>
+        </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      {/* Cabeçalho com botão de voltar */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={goToHomeScreen}>
-          <FontAwesome name="arrow-left" size={20} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Indicadores Econômicos</Text>
-      </View>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={goToHomeScreen}>
+            <FontAwesome name="arrow-left" size={20} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Indicadores Econômicos</Text>
+        </View>
 
-      {/* Conteúdo principal */}
-      <ScrollView style={styles.content}>
-        {indicators &&
-          Object.entries(indicators).map(([key, indicator]) => (
-            <View key={key} style={styles.indicatorCard}>
-              <Text style={styles.indicatorTitle}>{indicator.name}</Text>
-              <Text style={styles.indicatorValue}>R$ {indicator.value}</Text>
-              <Text
-                style={[
-                  styles.indicatorVariation,
-                  parseFloat(indicator.variation) >= 0
-                    ? styles.positiveVariation
-                    : styles.negativeVariation,
-                ]}
-              >
-                {indicator.variation}%{' '}
-                {parseFloat(indicator.variation) >= 0 ? '↑' : '↓'}
-              </Text>
-            </View>
-          ))}
-      </ScrollView>
-    </View>
+        <ScrollView style={styles.content}>
+          {indicators &&
+              Object.entries(indicators).map(([key, indicator]) => (
+                  <View key={key} style={styles.indicatorCard}>
+                    <Text style={styles.indicatorTitle}>{indicator.name}</Text>
+                    <Text style={styles.indicatorValue}>R$ {indicator.value}</Text>
+                    <Text
+                        style={[
+                          styles.indicatorVariation,
+                          parseFloat(indicator.variation) >= 0
+                              ? styles.positiveVariation
+                              : styles.negativeVariation,
+                        ]}
+                    >
+                      {indicator.variation}%{' '}
+                      {parseFloat(indicator.variation) >= 0 ? '↑' : '↓'}
+                    </Text>
+                  </View>
+              ))}
+        </ScrollView>
+      </View>
   );
 }
 
@@ -130,11 +114,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#1c1f26',
+    paddingHorizontal: 20,
   },
   loadingText: {
     color: '#fff',
     marginTop: 10,
     fontSize: 16,
+    textAlign: 'center',
   },
   content: {
     flex: 1,
