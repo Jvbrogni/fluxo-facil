@@ -5,92 +5,120 @@
 ### Added
 
 - **ESLint configurado** com `.eslintrc.json`, incluindo:
-  - Suporte a TypeScript (`@typescript-eslint`)
-  - Regras específicas para React Native
-  - Aviso para estilos inline (`react-native/no-inline-styles`)
+  - Suporte a TypeScript (`@typescript-eslint`).
+  - Regras específicas para React Native.
+  - Aviso para estilos inline (`react-native/no-inline-styles`).
 
 ### Changed
 
-#### login.tsx"
+- Tipagem explícita adicionada no login.
+- Separação clara de responsabilidades visuais e funcionais.
 
-- Tipagem explícita adicionada para `email`, `password` e retorno do componente (`JSX.Element`)
-- `handleLogin` envolvido em `useCallback` para melhor performance
-- Inputs e botões organizados com `StyleSheet.create(...)`
-- Separação clara de responsabilidades visuais e funcionais
-
-#### transaction-history.tsx
-
-- **Separação de responsabilidades**:
-
-  - o componente `AddTransaction`, antes autônomo, agora é chamado por uma nova tela `TransactionsScreen`, responsável por listar, adicionar e excluir transações.
-
-- **Novo componente de tela (TransactionsScreen)**:
-
-  - Adicionada navegação e controle de tabs (`Despesas`, `Receitas`).
-  - Implementada listagem agrupada por dia usando `SectionList`.
-  - Adicionada funcionalidade de exclusão de transações com atualização em `HomeService`.
-
-- **Melhorias de UX/UI**:
-
-  - Inclusão de ícones (`FontAwesome`, `AntDesign`, `FontAwesome6`) e feedbacks visuais.
-  - Adição de botão flutuante para adicionar transação.
-  - Layout e estilização aprimorados com separação clara entre lista e formulário.
-
-- **Melhoria no ciclo de dados**:
-
-  - Reorganização do `useEffect` para garantir atualização apenas quando o modal fecha.
-  - As transações agora são atualizadas com mais segurança no estado local e global.
-
-- **Outras melhorias**:
-  - Código modularizado e mais fácil de manter.
-  - Separação clara entre lógica de negócios (serviço) e interface de usuário.
-  - Identação e alinhamento leve ajustados.
-
+---
 
 ## 2025-05-27
 
 ### 🛠️ Added
 
-- Configuração do **ESLint** com suporte a:
-  - React
-  - React Native
-  - TypeScript
-  - Regras recomendadas e integração com Prettier
+- Configuração do **ESLint** com suporte a React, React Native, TypeScript.
+- Integração com Prettier.
+- Scripts no `package.json` para lint e format.
 
-- Configuração do **Prettier** com:
-  - Regras personalizadas (`singleQuote`, `trailingComma`, etc.)
-  - Suporte à formatação automática no VS Code
-
-- Adição de scripts no `package.json`:
-  - `"lint"` para rodar o ESLint
-  - `"format"` para aplicar o Prettier
-
-### 🧪 Testado
-
-- Verificação manual com `npx eslint .` e `npx prettier . --check`
-- Aplicado `--write` para corrigir formatação em todos os arquivos
+---
 
 ## 2025-05-28
 
 ### 🧪 Added
 
-- Configuração inicial de testes unitários com Jest:
-   - Suporte a TypeScript (ts-jest).
-   - Preset jest-expo configurado para projetos Expo.
-   - Pasta __tests__ criada para testes organizados por serviço.
+- Configuração inicial de testes unitários com Jest.
+  - Suporte a TypeScript (ts-jest).
+  - Preset jest-expo configurado para projetos Expo.
+  - Pasta __tests__ criada para testes organizados por serviço.
 
 - Cobertura inicial do serviço HomeService:
-   - Testes implementados com describe e it cobrindo:
-   - Geração de DTO de finanças (verificação de saldo, previsão, e dados do gráfico).
-   - Cálculo acumulado para gráficos.
-   - Divisão de datas em partes iguais.
-   - Formatação de datas em dd/MM.
+  - Testes implementados cobrindo geração de DTO, cálculo de gráficos, divisão de datas e formatação.
 
 ### ✅ Testado
 
 - 4 testes escritos para HomeService:
-   - 3 passaram com sucesso.
-   - 1 falhou inicialmente por inconsistência de fuso horário no toLocaleDateString, corrigido ajustando o horário da data de teste.
+  - 3 passaram com sucesso.
+  - 1 falhou inicialmente por fuso horário, corrigido ajustando o horário da data de teste.
 
-- Validação da cobertura de código com comando jest --coverage
+- Validação da cobertura de código com comando `jest --coverage`.
 
+---
+
+## [1.2.0] - 2025-05-29
+
+### ✨ Added
+
+- **TransactionBuilder**:
+  - Implementação do padrão Interface Fluente para construir objetos de transação de forma encadeada.
+  - Centralização da lógica de criação de transações, melhorando clareza e reutilização.
+
+- **EconomicService**:
+  - Serviço externo para buscar e mapear dados econômicos da API `awesomeapi.com.br`.
+  - Criação de tipagem segura (`EconomicApiResponse`) para parse correto dos dados.
+
+- **AuthService**:
+  - Extração da lógica de login para um serviço dedicado.
+  - Padronização do fluxo de autenticação e preparação para escalabilidade.
+
+- **TransactionService**:
+  - Extração da lógica de exclusão de transações para um serviço externo.
+  - Centralização das operações de remoção e atualização no `HomeService`.
+
+---
+
+### 🔧 Changed
+
+#### login.tsx
+
+- Extração do login para `AuthService` com chamada assíncrona limpa.
+- Adição de estado `loading` com feedback visual no botão.
+- Tipagem explícita para `email`, `password` e `JSX.Element`.
+
+#### add-transaction.tsx
+
+- Modularização de métodos (`validateFields`, `clearValue`, `backspaceValue`).
+- Uso do novo `TransactionBuilder` para construção fluente de transações.
+- Tipagem de props para substituir `any`.
+- Melhorias gerais de clareza e legibilidade.
+
+#### economic-indicator.tsx
+
+- Extração da lógica de busca para `EconomicService`.
+- Adição de tratamento visual para erros (ícone + mensagem).
+- Tipagem robusta para resposta da API.
+
+#### transaction-history.tsx
+
+- Extração de lógica de exclusão para `TransactionService`.
+- Melhor separação de responsabilidades entre lógica e interface.
+- Garantia de atualização local e global consistente.
+
+#### _layout.tsx e +not-found.tsx
+
+- Revisados, sem necessidade de refatoração no momento.
+- Avaliação concluída para garantir alinhamento futuro.
+
+#### confirmation.tsx
+
+- Revisado, mantido simples e funcional sem alterações.
+- Avaliação incluída para registro.
+
+---
+
+### 🛠️ Improvements (geral)
+
+- **Code Smell Review**:
+  - Identificados e resolvidos pontos como métodos longos, mistura de responsabilidades e tipagem fraca.
+  - Componentes passaram a delegar operações pesadas a serviços externos.
+
+- **Modularização**:
+  - Serviços centralizam regras de negócio.
+  - Componentes mantêm foco apenas na interface e nos estados visuais.
+
+- **Preparação para escalabilidade**:
+  - Base de código agora mais limpa, organizada e fácil de manter.
+  - Pronta para adição de testes unitários e mocks de serviços.
