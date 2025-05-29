@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import {
   Text,
-  View,
   StyleSheet,
   TextInput,
   TouchableOpacity,
