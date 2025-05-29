@@ -7,75 +7,119 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../infra/firebase';
 import logoImage from '@/assets/images/logo.png';
+import { AuthService } from '@/services/AuthService';
 
 export default function LoginScreen(): JSX.Element {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleLogin = useCallback(async () => {
+  const handleLogin = useCallback(async (): Promise<void> => {
+    setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      );
-      Alert.alert(
-        'Login Bem-sucedido',
-        `Bem-vindo, ${userCredential.user.email}!`,
-      );
+      const userCredential = await AuthService.login(email, password);
+      Alert.alert('Login Bem-sucedido', `Bem-vindo, ${userCredential.user.email}!`);
       router.push('/home');
-    } catch (error) {
+    } catch {
       Alert.alert('Erro de Login', 'Usuário ou senha incorretos.');
+    } finally {
+      setLoading(false);
     }
-  }, [email, password]);
+  }, [email, password, router]);
 
   return (
-    <View style={styles.container}>
-      <Image source={logoImage} style={styles.logo} />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        onChangeText={setEmail}
-        value={email}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        onChangeText={setPassword}
-        value={password}
-        secureTextEntry
-      />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Entrar</Text>
-      </TouchableOpacity>
-    </View>
+      <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <Image source={logoImage} style={styles.logo} resizeMode="contain" />
+        <TextInput
+            style={styles.input}
+            placeholder="Email"
+            onChangeText={setEmail}
+            value={email}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            placeholderTextColor="#999"
+        />
+        <TextInput
+            style={styles.input}
+            placeholder="Senha"
+            onChangeText={setPassword}
+            value={password}
+            secureTextEntry
+            placeholderTextColor="#999"
+        />
+        <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
+            onPress={handleLogin}
+            activeOpacity={0.8}
+            disabled={loading}
+        >
+          {loading ? (
+              <ActivityIndicator color="#fff" />
+          ) : (
+              <Text style={styles.buttonText}>Entrar</Text>
+          )}
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 24 },
-  logo: { width: 180, height: 180, alignSelf: 'center', marginBottom: 24 },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    backgroundColor: '#f4f6f8',
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 32,
+  },
   input: {
+    width: '100%',
     height: 50,
-    borderColor: '#ccc',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    marginBottom: 16,
     borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 12,
-    borderRadius: 6,
+    borderColor: '#ddd',
+    fontSize: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   button: {
+    width: '100%',
     backgroundColor: '#1e90ff',
-    padding: 12,
-    borderRadius: 6,
+    paddingVertical: 14,
+    borderRadius: 8,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+  buttonDisabled: {
+    backgroundColor: '#aaa',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
 });
