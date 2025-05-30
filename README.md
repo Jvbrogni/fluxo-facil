@@ -34,6 +34,14 @@ Certifique-se de ter instalado:
 
 - [Node.js](https://nodejs.org/)
 - [Expo CLI](https://expo.dev/)
+- Clone o repositório:
+  ```git clone https://github.com/seu-usuario/seu-repo.git```
+- Acesse a pasta do projeto:
+  ```cd seu-repo```
+- Instale as dependências:
+- ```npm install```
+- ```npm install -g expo-cli```
+- ```npx expo start```
 
 Link Apresentação: https://www.canva.com/design/DAGS7tR0_Z4/VsS56AYXkz_51_dtW2AdIg/edit?utm_content=DAGS7tR0_Z4&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
